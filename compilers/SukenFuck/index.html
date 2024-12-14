@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SukenFuck</title>
+    <meta property="og:title" content="SukenFuck" />
+    <meta property="og:description" content="Brainfuckを数研仕様にしたもの" />
+    <meta property="og:url" content="https://sites.suken.daemon.asia/MemberAPPs/sskrc/SukenFuck/" />
+    <meta property="og:type" content="website" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+    <style>
+        /* フローティングウィンドウのスタイル（中央表示） */
+        #shareWindow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* 中央に配置 */
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            display: none;
+            /* 初期状態は非表示 */
+            z-index: 1000;
+            max-width: 50%;
+        }
+
+        #shareWindow a {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        #generatedLink {
+            overflow: hidden;
+        }
+
+        /* 閉じるボタンのスタイル */
+        #closeButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+            height: 30px;
+            width: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #copyButton {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #copyButton:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+
+        #left-panel textarea {
+            width: 100%;
+            height: calc(100% - 50px);
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        #title {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 32px;
+            font-weight: bold;
+            display: none;
+            /* 初期状態で非表示 */
+            color:black;
+        }
+
+        #main {
+            display: flex;
+            padding: 10px;
+            box-sizing: border-box;
+            gap: 10px;
+            height: 100vh;
+        }
+
+        #left-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            padding-right: 10px;
+        }
+
+        #right-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #input-controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+            height: 40px;
+        }
+
+        #input-controls a {
+            margin-right: auto;
+            /* aタグを左寄せにする */
+        }
+
+        #input-controls button {
+            margin-left: 5px;
+        }
+
+        #right-controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+            height: 40px;
+        }
+
+        #right-controls button {
+            margin-left: 5px;
+        }
+
+        #import-modal textarea {
+            height: auto;
+            /* 高さを自動調整 */
+            max-height: 40vh;
+            /* 最大高さを制限 */
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            /* ユーザーによるリサイズを無効化 */
+            font-family: 'Noto Sans', sans-serif;
+            overflow: hidden;
+            /* スクロールバーを隠す */
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            max-height: 50vh;
+            overflow-y: auto;
+            border-collapse: collapse;
+            display: block;
+        }
+
+
+        table,
+        th,
+        td {
+            border: 1px solid #ccc;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        #output {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: white;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        #output-controls {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            overflow: hidden;
+            line-height: 2;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #import-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            width: 50%;
+        }
+
+        #import-modal input {
+            margin-bottom: 10px;
+        }
+
+        .github-logo {
+            height: 100%;
+            width: auto;
+        }
+
+        #right-panel input {
+            width: 40px;
+        }
+
+        .ascii {
+            display: none;
+            /* 初期状態では非表示 */
+        }
+
+        .ascii p {
+            margin: 0 10px;
+            /* pタグの左右に間隔を追加 */
+        }
+
+        #asciiInput {
+            width: 40px;
+            /* 入力欄の幅を指定 */
+        }
+
+        #asciiCode {
+            display: inline-block;
+            width: 7ch;
+            /* 幅を4桁分に固定 */
+            text-align: left;
+            /* 左寄せにして数字を表示 */
+        }
+
+        #keyboard {
+            display: none;
+            /* デフォルトでは非表示 */
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .key {
+            padding: 20px;
+            background-color: #f0f0f0;
+            text-align: center;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .fn-active {
+            background-color: #cce5ff;
+            /* Fnキー押下時の強調表示 */
+        }
+
+        .github-mini-logo {
+            display: none;
+        }
+
+        .suken-mini-logo {
+            height: 40px;
+        }
+
+        @media (min-width: 780px) {
+            .ascii {
+                display: flex;
+                align-items: center;
+                /* 垂直方向の中央揃え */
+                border: 2px solid black;
+                /* 枠を追加 */
+                padding: 10px;
+                /* 内側に余白を追加 */
+            }
+        }
+
+        @media (min-width: 960px) {
+            #title {
+                display: block;
+                /* 幅が960px以上の場合に表示 */
+            }
+
+            .suken-mini-logo {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #main {
+                flex-direction: column;
+                flex-grow: 1;
+                height: var(--main-height);
+            }
+
+            #left-panel textarea {
+                width: auto;
+            }
+
+            #left-panel,
+            #right-panel {
+                width: 100%;
+                /* 幅を100%にして上下に並べる */
+                flex-direction: row;
+                flex-direction: column;
+                /* 内容は左右に並べる */
+                height: 40%;
+            }
+
+
+            /* 必要に応じてパディングやマージンを調整 */
+            #left-panel {
+                padding-right: 0;
+                height: 60%;
+            }
+
+            #keyboard {
+                display: grid;
+                height: 120px;
+                user-select: none;
+                /* 文字選択を無効化 */
+                font-family: 'Noto Sans', sans-serif;
+
+            }
+
+            table {
+                display: none;
+            }
+
+            #right-controls {
+                display: none;
+            }
+
+            .github-mini-logo {
+                display: block;
+                height: 40px;
+            }
+
+            body {
+                flex: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="https://suken.daemon.asia"><div id="title">SukenFuck</div></a>
+    <div id="shareWindow">
+        <button id="closeButton" onclick="closeWindow()"><a>×</a></button>
+        <h3>共有リンク</h3>
+        <p id="generatedLink"></p>
+        <button id="copyButton" onclick="copyToClipboard()">リンクをコピー</button>
+    </div>
+    <div id="main">
+        <div id="left-panel">
+            <div id="input-controls">
+                <a target="_blank" href="https://suken.daemon.asia"><img class="suken-mini-logo"
+                        src="./Black-E.png"></a>
+                <a target="_blank" href="https://github.com/kg-suken/Sukenfuck"><img class="github-mini-logo"
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/640px-Octicons-mark-github.svg.png"></a>
+                <button id="importButton">読み込み</button>
+                <button id="saveButton">書き出し</button>
+                <button id="shareButton">共有</button>
+            </div>
+            <textarea id="input" placeholder="Sukenfuckコードを入力" onpaste="return true;"></textarea>
+        </div>
+        <div id="right-panel">
+            <div id="right-controls">
+                <div class="ascii">
+                    <p>ASCII-Code:</p><input type="text" id="asciiInput" maxlength="1" />
+                    <p><span id="asciiCode"></span></p>
+                </div>
+                <a target="_blank" href="https://github.com/kg-suken/Sukenfuck"><img class="github-logo"
+                        src="https://miro.medium.com/v2/resize:fit:1125/1*dDNpLKu_oTLzStsDTnkJ-g.png"></a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Brainfuck</th>
+                        <th>Sukenfuck</th>
+                        <th>読み方</th>
+                        <th>動作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>></td>
+                        <td>е</td>
+                        <td>キリル文字の小文字「е」</td>
+                        <td>命令ポインタを1つ右に移動させる。</td>
+                    </tr>
+                    <tr>
+                        <td>&lt;</td>
+                        <td>ɘ</td>
+                        <td>逆転した e (逆 e, IPA)</td>
+                        <td>命令ポインタを1つ左に移動させる。</td>
+                    </tr>
+                    <tr>
+                        <td>+</td>
+                        <td>é</td>
+                        <td>アキュートアクセント付き e</td>
+                        <td>現在のメモリをインクリメントする。</td>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td>è</td>
+                        <td>グレイヴアクセント付き e</td>
+                        <td>現在のメモリをデクリメントする。</td>
+                    </tr>
+                    <tr>
+                        <td>.</td>
+                        <td>ē</td>
+                        <td>マクロン付き e</td>
+                        <td>現在のメモリの値を文字コードとみなし出力する。</td>
+                    </tr>
+                    <tr>
+                        <td>,</td>
+                        <td>ę</td>
+                        <td>オゴネク付き e</td>
+                        <td>入力を求め、入力された値を現在のメモリに代入する。</td>
+                    </tr>
+                    <tr>
+                        <td>[</td>
+                        <td>ё</td>
+                        <td>キリル文字の小文字「ё」</td>
+                        <td>現在のメモリの値が0なら、対応するėにジャンプする。</td>
+                    </tr>
+                    <tr>
+                        <td>]</td>
+                        <td>ė</td>
+                        <td>ドット付き e</td>
+                        <td>現在のメモリの値が0でないなら、対応するёにジャンプする。</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="output">
+                <div id="output-consoule">コンソール
+                </div>
+                <div id="output-controls">
+                    <button id="toCButton">Cとして書き出し</button>
+                    <button id="runButton">実行</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="import-modal">
+        <button id="closeButton" onclick="closeWindow()">×</button>
+        <input type="file" id="fileInput" accept="*">
+        <textarea id="brainfuck" placeholder="Brainfuckコードを入力" onpaste="return true;"></textarea>
+        <button id="uploadButton">アップロード</button>
+    </div>
+    <div id="keyboard">
+        <div class="key" data-char="е">е</div>
+        <div class="key" data-char="ɘ">ɘ</div>
+        <div class="key" data-char="é">é</div>
+        <div class="key" data-char="è">è</div>
+        <div class="key" id="backspace">←</div>
+        <div class="key" data-char="ē">ē</div>
+        <div class="key" data-char="ę">ę</div>
+        <div class="key" data-char="ё">ё</div>
+        <div class="key" data-char="ė">ė</div>
+        <div class="key" id="fn">Fn</div>
+    </div>
+
+    <script>
+        const keyMapping = {
+            '>': 'е',
+            '<': 'ɘ',
+            '+': 'é',
+            '-': 'è',
+            '.': 'ē',
+            ',': 'ę',
+            '[': 'ё',
+            ']': 'ė'
+        };
+
+        const inputArea = document.getElementById('input');
+        const importModal = document.getElementById('import-modal');
+        const fileInput = document.getElementById('fileInput');
+
+        // テキストエリアへの入力マッピング
+        inputArea.addEventListener('keydown', (event) => {
+            // Ctrlキーとの組み合わせは許可
+            if (event.ctrlKey || event.metaKey) {
+                return;
+            }
+
+            if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete'].includes(event.key)) {
+                return;
+            }
+
+            if (!keyMapping.hasOwnProperty(event.key)) {
+                event.preventDefault();
+                return;
+            }
+
+            const start = inputArea.selectionStart;
+            const end = inputArea.selectionEnd;
+            const before = inputArea.value.slice(0, start);
+            const after = inputArea.value.slice(end);
+            inputArea.value = before + keyMapping[event.key] + after;
+            inputArea.selectionStart = inputArea.selectionEnd = start + 1;
+            event.preventDefault();
+        });
+
+
+        // 保存と復元のエラー対策
+        inputArea.addEventListener('input', () => {
+            try {
+                localStorage.setItem('sukenfuckText', inputArea.value);
+            } catch (e) {
+                console.error("Error saving to localStorage", e);
+            }
+        });
+
+        window.addEventListener('load', () => {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+                const inputArea = document.getElementById('input'); // assuming inputArea is the textarea ID
+
+                // 1. If 'code' exists in the URL parameters
+                if (code) {
+                    inputArea.value = code;
+
+                    // Remove 'code' from the URL parameters and update the URL
+                    urlParams.delete('code');
+                    window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+
+                }
+                // 2. If there's a cookie 'inputText' (you can replace 'inputText' with your specific cookie name)
+                else {
+                    const savedText = localStorage.getItem('sukenfuckText');
+                    if (savedText) {
+                        inputArea.value = savedText;
+                    } else {
+                        inputArea.value = 'ééééééééёеééééёеééеéééеéééеéɘɘɘɘèėеéеéеèееéёɘėɘèėееēеèèèēéééééééēēéééēееēɘèēɘēéééēèèèèèèēèèèèèèèèēееéēеééē';  // Replace with your desired default text
+                    }
+                }
+            } catch (e) {
+                console.error("Error loading from localStorage or URL parameters");
+            }
+        });
+
+
+
+
+        // ファイルの保存
+        document.getElementById('saveButton').addEventListener('click', () => {
+            const content = inputArea.value;
+            const fileName = prompt('Enter the file name:', 'example.sf');
+            if (fileName) {
+                const blob = new Blob([content], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        });
+
+        // ファイルのインポート
+        document.getElementById('importButton').addEventListener('click', () => {
+            importModal.style.display = 'flex';
+        });
+
+        document.getElementById('uploadButton').addEventListener('click', () => {
+            const fileInput = document.getElementById('fileInput'); // ファイル入力要素の取得
+            const inputArea = document.getElementById('input'); // 入力先テキストエリア
+            const brainfuckArea = document.getElementById('brainfuck'); // ソーステキストエリア
+            const importModal = document.getElementById('importModal'); // モーダル要素
+
+            const replacements = {
+                '>': 'е',
+                '<': 'ɘ',
+                '+': 'é',
+                '-': 'è',
+                '.': 'ē',
+                ',': 'ę',
+                '[': 'ё',
+                ']': 'ė'
+            };
+
+            const replaceCharacters = (text) => {
+                return text.replace(/[><+\-.,\[\]]/g, (char) => replacements[char] || char);
+            };
+
+            const file = fileInput.files[0]; // ファイル取得
+            if (file) {
+                // ファイルが指定されている場合、ファイル内容を読み込む
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    inputArea.value = replaceCharacters(event.target.result);
+                    try {
+                        localStorage.setItem('sukenfuckText', inputArea.value); // ローカルストレージに保存
+                    } catch (e) {
+                        console.error("Error saving to localStorage", e);
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                // ファイルが指定されていない場合、brainfuckArea の値を inputArea にコピー
+                inputArea.value = replaceCharacters(brainfuckArea.value);
+                try {
+                    localStorage.setItem('sukenfuckText', inputArea.value); // ローカルストレージに保存
+                } catch (e) {
+                    console.error("Error saving to localStorage", e);
+                }
+            }
+
+            document.getElementById('brainfuck').value = '';
+            document.getElementById("import-modal").style.display = "none";
+            document.getElementById('fileInput').value = '';
+
+        });
+
+
+
+        window.addEventListener('click', (event) => {
+            if (event.target === importModal) {
+                importModal.style.display = 'none';
+            }
+        });
+
+        document.getElementById('toCButton').addEventListener('click', () => {
+            const brainfuckCode = document.getElementById('input').value;
+
+            // POSTリクエストを送信
+            fetch('./2c.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'brainfuck_code=' + encodeURIComponent(brainfuckCode)
+            })
+                .then(response => response.text())
+                .then(c_code => {
+                    // ファイル名をpromptで入力
+                    let fileName = prompt('保存するファイル名を入力してください（拡張子 .c を含む）:', 'program.c');
+                    if (!fileName || fileName.trim() === '') {
+                        fileName = 'program.c'; // デフォルトの名前
+                    }
+
+                    // プレーンテキストとしてCコードを受け取る
+                    const blob = new Blob([c_code], { type: 'text/plain' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = fileName;
+                    link.click();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+
+
+
+
+        document.getElementById('input').addEventListener('paste', (event) => {
+            const pastedData = event.clipboardData.getData('text');
+            console.log("Pasted data:", pastedData); // ログに貼り付けられたデータを出力
+            // 貼り付けたデータをそのままテキストエリアに挿入する
+            const textarea = event.target;
+            const selectionStart = textarea.selectionStart;
+            const selectionEnd = textarea.selectionEnd;
+            const value = textarea.value;
+
+            textarea.value = value.slice(0, selectionStart) + pastedData + value.slice(selectionEnd);
+            textarea.selectionStart = textarea.selectionEnd = selectionStart + pastedData.length;
+
+            event.preventDefault(); // デフォルトの貼り付け処理をキャンセル
+        });
+        // 共有ボタンが押された時にリンクを生成
+        document.getElementById("shareButton").onclick = function () {
+            const code = document.getElementById("input").value.trim(); // テキストエリアの内容を取得
+            if (code) {
+                const currentUrl = window.location.href.split('?')[0]; // ?以降を削除
+                const newUrl = `${currentUrl}?code=${code}`; // encodeURIComponentを使わない
+
+                // 生成したリンクを表示
+                document.getElementById("generatedLink").innerHTML = `<a href="${newUrl}" target="_blank">${newUrl}</a>`;
+
+                // フローティングウィンドウを表示
+                document.getElementById("shareWindow").style.display = "block";
+            } else {
+                alert("コードを入力してください！");
+            }
+        };
+
+
+        // クリップボードにコピー
+        function copyToClipboard() {
+            const link = document.getElementById("generatedLink").querySelector("a").href;
+            navigator.clipboard.writeText(link).then(function () {
+                // コピー後にボタンのテキストを変更
+                document.getElementById("copyButton").innerText = "コピーしました!";
+                // ボタンを無効化
+                document.getElementById("copyButton").disabled = true;
+            }).catch(function (err) {
+                console.error('コピーに失敗しました', err);
+            });
+        }
+
+        // フローティングウィンドウを閉じる
+        function closeWindow() {
+            document.getElementById("shareWindow").style.display = "none";
+            document.getElementById("import-modal").style.display = "none";
+            document.getElementById("copyButton").innerText = "リンクをコピー";
+            document.getElementById('fileInput').value = '';
+            document.getElementById("copyButton").disabled = false;
+        }
+        document.getElementById('runButton').addEventListener('click', () => {
+            const brainfuckCode = document.getElementById('input').value;
+            const outputElement = document.getElementById('output-consoule');
+            try {
+                const jsCode = brainfuckToJs(brainfuckCode);
+                const result = executeJsCode(jsCode);
+                outputElement.textContent = result;
+            } catch (error) {
+                outputElement.textContent = `エラー: ${error.message}`;
+            }
+        });
+
+        function brainfuckToJs(brainfuckCode) {
+            let jsCode = `
+                const memory = new Uint8Array(30000);
+                let ptr = 0;
+                let output = '';
+            `;
+
+            for (let i = 0; i < brainfuckCode.length; i++) {
+                const command = brainfuckCode[i];
+                switch (command) {
+                    case 'е':
+                        jsCode += 'ptr++;';
+                        break;
+                    case 'ɘ':
+                        jsCode += 'ptr--;';
+                        break;
+                    case 'é':
+                        jsCode += 'memory[ptr]++;';
+                        break;
+                    case 'è':
+                        jsCode += 'memory[ptr]--;';
+                        break;
+                    case 'ē':
+                        jsCode += 'output += String.fromCharCode(memory[ptr]);';
+                        break;
+                    case 'ę':
+                        jsCode += 'memory[ptr] = prompt("入力文字:").charCodeAt(0);';
+                        break;
+                    case 'ё':
+                        jsCode += 'while (memory[ptr]) {';
+                        break;
+                    case 'ė':
+                        jsCode += '}';
+                        break;
+                    default:
+                        // 無視
+                        break;
+                }
+            }
+
+            jsCode += 'return output;';
+            return new Function(jsCode);
+        }
+
+        function executeJsCode(jsCodeFunction) {
+            return jsCodeFunction();
+        }
+        // 入力欄のイベントリスナーを設定
+        document.getElementById("asciiInput").addEventListener("input", function (event) {
+            const inputChar = event.target.value; // 入力された文字列を取得
+            if (inputChar.length === 1) {
+                // 1文字が入力された場合、そのASCIIコードを表示
+                const asciiCode = inputChar.charCodeAt(0);
+                document.getElementById("asciiCode").textContent = asciiCode;
+            } else {
+                // 文字が入力されていない場合や複数文字の場合、表示をクリア
+                document.getElementById("asciiCode").textContent = '';
+            }
+        });
+
+
+
+
+
+
+        const keys = document.querySelectorAll('.key');
+        const inputField = document.getElementById('input');
+        const fnKey = document.getElementById('fn');
+        const backspaceKey = document.getElementById('backspace');
+
+        // Fnキー押下時のキー切り替えマッピング（見た目だけ）
+        const fnMapping = {
+            'е': '>',
+            'ɘ': '<',
+            'é': '+',
+            'è': '-',
+            'ē': '.',
+            'ę': ',',
+            'ё': '[',
+            'ė': ']'
+        };
+
+        let fnActive = false; // Fnキー状態
+        let pressTimeout; // 長押しタイマー
+        let pressInterval; // 長押し時の入力インターバル
+
+        // キークリックイベント
+        keys.forEach(key => {
+
+            key.addEventListener('touchstart', (event) => {
+                event.preventDefault(); // タッチイベントのデフォルト動作を防止
+                handleKeyPress(key);
+                startLongPress(key);
+            });
+
+            key.addEventListener('mouseup', () => {
+                clearPressTimers();
+            });
+
+            key.addEventListener('touchend', () => {
+                clearPressTimers();
+            });
+
+            key.addEventListener('mouseleave', () => {
+                clearPressTimers();
+            });
+
+            key.addEventListener('touchleave', () => {
+                clearPressTimers();
+            });
+
+            key.addEventListener('click', () => {
+                if (key.id === 'backspace') {
+                    inputField.value = inputField.value.slice(0, -1);
+                } else if (key.id === 'fn') {
+                    fnActive = !fnActive;
+                    fnKey.classList.toggle('fn-active', fnActive);
+                    updateKeyLabels();
+                } else if (key.dataset.char) {
+                    inputField.value += key.dataset.char;
+                }
+            });
+        });
+
+        // キーのラベルを更新（見た目のみ変更）
+        function updateKeyLabels() {
+            keys.forEach(key => {
+                const originalChar = key.dataset.char;
+                if (originalChar && fnMapping[originalChar]) {
+                    key.textContent = fnActive ? fnMapping[originalChar] : originalChar;
+                }
+            });
+        }
+
+        // キーが押された時の入力処理
+        function handleKeyPress(key) {
+            if (key.id === 'backspace') {
+                inputField.value = inputField.value.slice(0, -1);
+            } else if (key.id === 'fn') {
+                fnActive = !fnActive;
+                fnKey.classList.toggle('fn-active', fnActive);
+                updateKeyLabels();
+            } else if (key.dataset.char) {
+                inputField.value += key.dataset.char;
+            }
+        }
+
+        // 長押し処理を開始
+        function startLongPress(key) {
+            pressTimeout = setTimeout(() => {
+                pressInterval = setInterval(() => {
+                    handleKeyPress(key);
+                }, 60); // 200msごとに連続入力
+            }, 500); // 初回の長押しを500ms後に開始
+        }
+
+        // 長押しタイマーをクリア
+        function clearPressTimers() {
+            clearTimeout(pressTimeout);
+            clearInterval(pressInterval);
+        }
+
+
+        function setViewportHeight() {
+            const viewportHeight = window.innerHeight;  // ビューポートの高さを取得
+            const adjustedHeight = viewportHeight - 160;  // 130px分を引く
+
+            // CSS変数 --main-height に計算した高さを設定
+            document.documentElement.style.setProperty('--main-height', `${adjustedHeight}px`);
+        }
+
+        // 初期設定
+        setViewportHeight();
+
+        // ウィンドウのサイズが変更された場合に再計算
+        window.addEventListener('resize', setViewportHeight);
+
+    </script>
+</body>
+
+</html>
