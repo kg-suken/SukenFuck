@@ -1,10 +1,10 @@
-# Sukenfuck
-BrainfuckをSuken仕様にしたもの。  
+# SukenFuck
+BrainFuckをSuken仕様にしたもの。  
 [オンラインコンパイラ](https://sites.suken.daemon.asia/MemberAPPs/sskrc/SukenFuck/index.html)をお試しください。
 
 
 ## 対応表
-| 命令 (Brainfuck) | 命令 (Sukenfuck)| 読み方 | 動作 |
+| 命令 (Brainfuck) | 命令 (SukenFuck)| 読み方 | 動作 |
 |--------------|------|--------|------|
 | `>`          | е    | (U+0435): キリル文字の小文字「е」 | 命令ポインタを1つ右に移動させる。 |
 | `<`          | ɘ    | (U+0258): 逆転した e (逆 e, IPA) | 命令ポインタを1つ左に移動させる。 |
