@@ -10,7 +10,34 @@
     <meta property="og:url" content="https://sites.suken.daemon.asia/MemberAPPs/sskrc/SukenFuck/" />
     <meta property="og:type" content="website" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
     <style>
+        /* HTML: <div class="loader"></div> */
+        .loader {
+            width: 25px;
+            --b: 8px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            padding: 1px;
+            background: conic-gradient(#0000 10%, #ffffff) content-box;
+            -webkit-mask:
+                repeating-conic-gradient(#0000 0deg, #000 1deg 20deg, #0000 21deg 36deg),
+                radial-gradient(farthest-side, #0000 calc(100% - var(--b) - 1px), #000 calc(100% - var(--b)));
+            -webkit-mask-composite: destination-in;
+            mask-composite: intersect;
+            animation: l4 1s infinite steps(10);
+        }
+
+        @keyframes l4 {
+            to {
+                transform: rotate(1turn)
+            }
+        }
+
         /* フローティングウィンドウのスタイル（中央表示） */
         #shareWindow {
             position: fixed;
@@ -78,35 +105,23 @@
         }
 
 
-        #left-panel textarea {
-            width: 100%;
-            height: calc(50% - 25px);
-            font-size: 16px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            resize: none;
-            font-family: 'Noto Sans', sans-serif;
-        }
-
         #left-panel pre {
-            width: calc(100% - 5px);
-            height: calc(50% - 25px);
+            height: calc(100% - 10px);
+            width: auto;
             font-size: 16px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
             resize: none;
             font-family: 'Noto Sans', sans-serif;
             background-color: white;
             white-space: pre-wrap;
             word-wrap: break-word;
-            margin-top:0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            border: 10px solid #fff;
+            border-radius: 5px;
         }
 
         #register {
             flex-grow: 1;
-            width: calc(100% - 5px);
             height: calc(50% - 25px);
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -115,6 +130,7 @@
             overflow-y: auto;
             position: relative;
             user-select: none;
+            margin-top: 16px;
         }
 
         #register-controls {
@@ -138,12 +154,12 @@
             display: flex;
             padding: 10px;
             box-sizing: border-box;
-            gap: 10px;
             height: 100vh;
+            justify-content: center;
         }
 
         #left-panel {
-            width: 50%;
+            width: calc(50% - 10px);
             display: flex;
             flex-direction: column;
             padding-right: 10px;
@@ -154,6 +170,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            margin-left: 10px;
         }
 
         #input-controls {
@@ -202,9 +219,9 @@
             box-sizing: border-box;
         }
 
-        table {
+        #right-panel table {
             width: 100%;
-            max-height: 50vh;
+            max-height: 60vh;
             overflow-y: auto;
             border-collapse: collapse;
             display: block;
@@ -215,6 +232,7 @@
         th,
         td {
             border: 1px solid #ccc;
+            font-family: 'Noto Sans', sans-serif;
         }
 
         th,
@@ -231,14 +249,22 @@
             background-color: white;
             overflow-y: auto;
             position: relative;
-            margin-top:10px;
+            margin-top: 16px;
         }
 
         #output-controls {
             position: absolute;
             bottom: 10px;
             right: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
         }
+
+        #output-controls button {
+            margin-left: 3px;
+        }
+
 
         button {
             padding: 10px 20px 10px 20px;
@@ -353,6 +379,94 @@
             text-align: center;
         }
 
+        #tabel_bf_mini_text {
+            display: none;
+        }
+
+        #tabel_sf_mini_text {
+            display: none;
+        }
+
+        #table4phone {
+            display: none;
+            height: 100vh;
+        }
+
+        #table4phone table {
+            width: 100%;
+            max-height: 100vh;
+            overflow-y: auto;
+            border-collapse: collapse;
+        }
+
+        .char-e {
+            color: red;
+        }
+
+        .char-ɘ {
+            color: blue;
+        }
+
+        .char-é {
+            color: green;
+        }
+
+        .char-è {
+            color: purple;
+        }
+
+        .char-ē {
+            color: orange;
+        }
+
+        .char-ę {
+            color: pink;
+        }
+
+        .char-ё {
+            color: teal;
+        }
+
+        .char-ė {
+            color: brown;
+        }
+
+        .input-container button.eye-icon {
+            position: absolute;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #888;
+            font-family: "Noto Emoji", sans-serif;
+            font-style: normal;
+            cursor: pointer;
+            bottom: 10px;
+            right: 20px;
+            padding: 0px;
+            vertical-align: bottom;
+        }
+
+        .input-container button.eye-icon:hover {
+            color: #555;
+            /* ホバー時に少し濃く */
+        }
+
+        .input-container {
+            position: relative;
+            height: calc(50% - 25px);
+            font-size: 16px;
+            resize: none;
+            font-family: 'Noto Sans', sans-serif;
+            margin-bottom: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emoji {
+            font-family: "Noto Emoji", sans-serif;
+        }
+
         @media (min-width: 850px) {
             .ascii {
                 display: flex;
@@ -368,11 +482,34 @@
         @media (min-width: 1000px) {
             #title {
                 display: block;
-                /* 幅が960px以上の場合に表示 */
             }
 
             .suken-mini-logo {
                 display: none;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            #table_sf_character {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1800px) {
+            #tabel_bf_full_text {
+                display: none;
+            }
+
+            #tabel_bf_mini_text {
+                display: block;
+            }
+
+            #tabel_sf_full_text {
+                display: none;
+            }
+
+            #tabel_sf_mini_text {
+                display: block;
             }
         }
 
@@ -395,6 +532,10 @@
                 width: auto;
             }
 
+            #output {
+                margin-top: 10px;
+            }
+
             #left-panel,
             #right-panel {
                 width: 100%;
@@ -402,14 +543,19 @@
                 flex-direction: row;
                 flex-direction: column;
                 /* 内容は左右に並べる */
-                height: 40%;
+                height: 30%;
             }
 
 
             /* 必要に応じてパディングやマージンを調整 */
             #left-panel {
                 padding-right: 0;
-                height: 60%;
+                height: 70%;
+            }
+
+            #right-panel {
+                padding-left: 0;
+                margin-left: 0;
             }
 
             #keyboard {
@@ -421,7 +567,7 @@
 
             }
 
-            table {
+            #right-panel table {
                 display: none;
             }
 
@@ -438,139 +584,220 @@
                 flex: none;
             }
         }
+
+        @media (max-width: 4000px) {
+            .base_number_button_div {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <a href="https://suken.daemon.asia">
-        <div id="title">SukenFuck</div>
-    </a>
-    <div id="shareWindow">
-        <button id="closeButton" onclick="closeWindow()"><a>×</a></button>
-        <h3>共有リンク</h3>
-        <p id="generatedLink"></p>
-        <button id="copyButton" onclick="copyToClipboard()">リンクをコピー</button>
+    <div id="table4phone">
+        <table>
+            <thead>
+                <tr>
+                    <th id="table_bf">Brainfuck</th>
+                    <th id="table_sf">SukenFuck</th>
+                    <th id="phone_table_sf_character">読み方</th>
+                    <th>動作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="phone_table_bf">></td>
+                    <td id="phone_table_sf">е</td>
+                    <td id="phone_table_sf_character">キリル文字の小文字「е」</td>
+                    <td>命令ポインタを1つ右に移動させる。</td>
+                </tr>
+                <tr>
+                    <td id="phone_table_bf">&lt;</td>
+                    <td id="phone_table_sf">ɘ</td>
+                    <td id="phone_table_sf_character">逆転した e (逆 e, IPA)</td>
+                    <td>命令ポインタを1つ左に移動させる。</td>
+                </tr>
+                <tr>
+                    <td id="phone_table_bf">+</td>
+                    <td id="phone_table_sf">é</td>
+                    <td id="phone_table_sf_character">アキュートアクセント付き e</td>
+                    <td>現在のメモリをインクリメントする。</td>
+                </tr>
+                <tr>
+                    <td id="phone_table_bf">-</td>
+                    <td id="phone_table_sf">è</td>
+                    <td id="phone_table_sf_character">グレイヴアクセント付き e</td>
+                    <td>現在のメモリをデクリメントする。</td>
+                </tr>
+                <tr>
+                    <td id="phone_table_bf">.</td>
+                    <td id="phone_table_sf">ē</td>
+                    <td id="phone_table_sf_character">マクロン付き e</td>
+                    <td>現在のメモリの値を文字コードとみなし出力する。</td>
+                </tr>
+                <tr>
+                    <td id="phone_table_bf">,</td>
+                    <td id="phone_table_sf">ę</td>
+                    <td id="phone_table_sf_character">オゴネク付き e</td>
+                    <td>入力を求め、入力された値を現在のメモリに代入する。</td>
+                </tr>
+                <tr>
+                    <td id="phone_table_bf">[</td>
+                    <td id="phone_table_sf">ё</td>
+                    <td id="phone_table_sf_character">キリル文字の小文字「ё」</td>
+                    <td>現在のメモリの値が0なら、対応するėにジャンプする。</td>
+                </tr>
+                <tr>
+                    <td id="phone_table_bf">]</td>
+                    <td id="phone_table_sf">ė</td>
+                    <td id="phone_table_sf_character">ドット付き e</td>
+                    <td>現在のメモリの値が0でないなら、対応するёにジャンプする。</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div id="main">
-        <div id="left-panel">
-            <div id="input-controls">
-                <a target="_blank" href="https://suken.daemon.asia"><img class="suken-mini-logo"
-                        src="./Black-E.png"></a>
-                <a target="_blank" href="https://github.com/kg-suken/Sukenfuck"><img class="github-mini-logo"
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/640px-Octicons-mark-github.svg.png"></a>
-                <button id="importButton">読み込み</button>
-                <button id="saveButton">書き出し</button>
-                <button id="shareButton">共有</button>
-            </div>
-            <pre id="input" contenteditable="true" placeholder="Sukenfuckコードを入力" onpaste="return true;"></pre>
-            <div id="register">
-                <div id="register-output">
-                </div>
-                <div id="register-controls">
-                    <button id="playBtn">Play</button>
-                    <button id="stepBtn">1Step</button>
-                    <button id="resetBtn">リセット</button>
-                    <button id="16or10">10進数</button>
-                </div>
-            </div>
+    <div id="normal">
+        <a href="https://suken.daemon.asia">
+            <div id="title">SukenFuck</div>
+        </a>
+        <div id="shareWindow">
+            <button id="closeButton" onclick="closeWindow()"><a>×</a></button>
+            <h3>共有リンク</h3>
+            <p id="generatedLink"></p>
+            <button id="copyButton" onclick="copyToClipboard()">リンクをコピー</button>
         </div>
-        <div id="right-panel">
-            <div id="right-controls">
-                <div class="ascii">
-                    <p>ASCII-Code:</p><input type="text" id="asciiInput" maxlength="1" />
-                    <p><span id="asciiCode"></span></p>
-                </div>
-                <a target="_blank" href="https://github.com/kg-suken/Sukenfuck"><img class="github-logo"
-                        src="https://miro.medium.com/v2/resize:fit:1125/1*dDNpLKu_oTLzStsDTnkJ-g.png"></a>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Brainfuck</th>
-                        <th>Sukenfuck</th>
-                        <th>読み方</th>
-                        <th>動作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>></td>
-                        <td>е</td>
-                        <td>キリル文字の小文字「е」</td>
-                        <td>命令ポインタを1つ右に移動させる。</td>
-                    </tr>
-                    <tr>
-                        <td>&lt;</td>
-                        <td>ɘ</td>
-                        <td>逆転した e (逆 e, IPA)</td>
-                        <td>命令ポインタを1つ左に移動させる。</td>
-                    </tr>
-                    <tr>
-                        <td>+</td>
-                        <td>é</td>
-                        <td>アキュートアクセント付き e</td>
-                        <td>現在のメモリをインクリメントする。</td>
-                    </tr>
-                    <tr>
-                        <td>-</td>
-                        <td>è</td>
-                        <td>グレイヴアクセント付き e</td>
-                        <td>現在のメモリをデクリメントする。</td>
-                    </tr>
-                    <tr>
-                        <td>.</td>
-                        <td>ē</td>
-                        <td>マクロン付き e</td>
-                        <td>現在のメモリの値を文字コードとみなし出力する。</td>
-                    </tr>
-                    <tr>
-                        <td>,</td>
-                        <td>ę</td>
-                        <td>オゴネク付き e</td>
-                        <td>入力を求め、入力された値を現在のメモリに代入する。</td>
-                    </tr>
-                    <tr>
-                        <td>[</td>
-                        <td>ё</td>
-                        <td>キリル文字の小文字「ё」</td>
-                        <td>現在のメモリの値が0なら、対応するėにジャンプする。</td>
-                    </tr>
-                    <tr>
-                        <td>]</td>
-                        <td>ė</td>
-                        <td>ドット付き e</td>
-                        <td>現在のメモリの値が0でないなら、対応するёにジャンプする。</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div id="output">
-                <pre id="output-consoule">
-                </pre>
-                <div id="output-controls">
-                    <button id="toCButton">Cとして書き出し</button>
-                    <button id="runButton">実行</button>
-                </div>
-            </div>
-        </div>
-    </div>
+        <div id="main">
+            <div id="left-panel">
+                <div id="input-controls">
+                    <a href="#" id="driver"><img class="suken-mini-logo" src="./Black-E.png"></a>
+                    <a target="_blank" href="https://github.com/kg-suken/SukenFuck"><img class="github-mini-logo"
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/640px-Octicons-mark-github.svg.png"></a>
+                    <button id="importButton">読み込み</button>
+                    <button id="saveButton">書き出し</button>
+                    <button id="shareButton">共有</button>
 
-    <div id="import-modal">
-        <button id="closeButton" onclick="closeWindow()">×</button>
-        <input type="file" id="fileInput" accept="*">
-        <textarea id="brainfuck" placeholder="Brainfuckコードを入力" onpaste="return true;"></textarea>
-        <button id="uploadButton">アップロード</button>
-    </div>
-    <div id="keyboard">
-        <div class="key" data-char="е">е</div>
-        <div class="key" data-char="ɘ">ɘ</div>
-        <div class="key" data-char="é">é</div>
-        <div class="key" data-char="è">è</div>
-        <div class="key" id="backspace">←</div>
-        <div class="key" data-char="ē">ē</div>
-        <div class="key" data-char="ę">ę</div>
-        <div class="key" data-char="ё">ё</div>
-        <div class="key" data-char="ė">ė</div>
-        <div class="key" id="fn">Fn</div>
+                </div>
+                <div class=input-container>
+                    <pre id="input" contenteditable="true" placeholder="SukenFuckコードを入力" onpaste="return true;"></pre>
+                    <button type="button" id="ColortoggleButton" class="eye-icon" aria-label="パスワードの表示/非表示">
+                        ️<span class="emoji">👁</span>
+                    </button>
+                </div>
+                <div id="register">
+                    <div id="register-output">
+                    </div>
+                    <div id="register-controls">
+                        <button id="playBtn">Play</button>
+                        <button id="stepBtn">1Step</button>
+                        <button id="resetBtn">リセット</button>
+                        <button class="base_number_button_div" id="16or10">10進数</button>
+                    </div>
+                </div>
+            </div>
+            <div id="right-panel">
+                <div id="right-controls">
+                    <div class="ascii">
+                        <p>ASCII-Code:</p><input type="text" id="asciiInput" maxlength="1" />
+                        <p><span id="asciiCode"></span></p>
+                    </div>
+                    <a target="_blank" href="https://github.com/kg-suken/SukenFuck"><img class="github-logo"
+                            src="https://miro.medium.com/v2/resize:fit:1125/1*dDNpLKu_oTLzStsDTnkJ-g.png"></a>
+                </div>
+                <table id="table">
+                    <thead>
+                        <tr>
+                            <th id="phone_table_bf">
+                                <div id="tabel_bf_full_text">Brainfuck</div>
+                                <div id="tabel_bf_mini_text">Bf</div>
+                            </th>
+                            <th id="phone_table_sf">
+                                <div id="tabel_sf_full_text">SukenFuck</div>
+                                <div id="tabel_sf_mini_text">SF</div>
+                            </th>
+                            <th id="table_sf_character">読み方</th>
+                            <th>動作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="table_bf">></td>
+                            <td id="table_sf">е</td>
+                            <td id="table_sf_character">キリル文字の小文字「е」</td>
+                            <td>命令ポインタを1つ右に移動させる。</td>
+                        </tr>
+                        <tr>
+                            <td id="table_bf">&lt;</td>
+                            <td id="table_sf">ɘ</td>
+                            <td id="table_sf_character">逆転した e (逆 e, IPA)</td>
+                            <td>命令ポインタを1つ左に移動させる。</td>
+                        </tr>
+                        <tr>
+                            <td id="table_bf">+</td>
+                            <td id="table_sf">é</td>
+                            <td id="table_sf_character">アキュートアクセント付き e</td>
+                            <td>現在のメモリをインクリメントする。</td>
+                        </tr>
+                        <tr>
+                            <td id="table_bf">-</td>
+                            <td id="table_sf">è</td>
+                            <td id="table_sf_character">グレイヴアクセント付き e</td>
+                            <td>現在のメモリをデクリメントする。</td>
+                        </tr>
+                        <tr>
+                            <td id="table_bf">.</td>
+                            <td id="table_sf">ē</td>
+                            <td id="table_sf_character">マクロン付き e</td>
+                            <td>現在のメモリの値を文字コードとみなし出力する。</td>
+                        </tr>
+                        <tr>
+                            <td id="table_bf">,</td>
+                            <td id="table_sf">ę</td>
+                            <td id="table_sf_character">オゴネク付き e</td>
+                            <td>入力を求め、入力された値を現在のメモリに代入する。</td>
+                        </tr>
+                        <tr>
+                            <td id="table_bf">[</td>
+                            <td id="table_sf">ё</td>
+                            <td id="table_sf_character">キリル文字の小文字「ё」</td>
+                            <td>現在のメモリの値が0なら、対応するėにジャンプする。</td>
+                        </tr>
+                        <tr>
+                            <td id="table_bf">]</td>
+                            <td id="table_sf">ė</td>
+                            <td id="table_sf_character">ドット付き e</td>
+                            <td>現在のメモリの値が0でないなら、対応するёにジャンプする。</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div id="output">
+                    <pre id="output-consoule">
+                </pre>
+                    <div id="output-controls">
+                        <button id="toCButton">Cとして書き出し</button>
+                        <button id="runButton">実行</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="import-modal">
+            <button id="closeButton" onclick="closeWindow()">×</button>
+            <input type="file" id="fileInput" accept="*">
+            <textarea id="brainfuck" placeholder="Brainfuckコードを入力" onpaste="return true;"></textarea>
+            <button id="uploadButton">適用</button>
+        </div>
+        <div id="keyboard">
+            <div class="key" data-char="е">е</div>
+            <div class="key" data-char="ɘ">ɘ</div>
+            <div class="key" data-char="é">é</div>
+            <div class="key" data-char="è">è</div>
+            <div class="key" id="backspace">←</div>
+            <div class="key" data-char="ē">ē</div>
+            <div class="key" data-char="ę">ę</div>
+            <div class="key" data-char="ё">ё</div>
+            <div class="key" data-char="ė">ė</div>
+            <div class="key" id="fn">Fn</div>
+        </div>
     </div>
 
     <script>
@@ -726,7 +953,7 @@
                 reader.onload = (event) => {
                     inputArea.textContent = replaceCharacters(event.target.result);
                     try {
-                        localStorage.setItem('sukenfuckText', inputArea.textContent); // ローカルストレージに保存
+                        localStorage.setItem('SukenFuckText', inputArea.textContent); // ローカルストレージに保存
                     } catch (e) {
                         console.error("Error saving to localStorage", e);
                     }
@@ -736,7 +963,7 @@
                 // ファイルが指定されていない場合、brainfuckArea の値を inputArea にコピー
                 inputArea.textContent = replaceCharacters(brainfuckArea.value);
                 try {
-                    localStorage.setItem('sukenfuckText', inputArea.textContent); // ローカルストレージに保存
+                    localStorage.setItem('SukenFuckText', inputArea.textContent); // ローカルストレージに保存
                 } catch (e) {
                     console.error("Error saving to localStorage", e);
                 }
@@ -1001,6 +1228,7 @@
                 toggleButton.textContent = '10進数';
             }
             updateMemoryDisplay(); // メモリ表示を更新
+            updateAsciiCode();
         }
 
         const codeArea = document.getElementById('input');
@@ -1188,8 +1416,11 @@
         }
 
         runBtn.addEventListener('click', async () => {
+            runBtn.innerHTML = '<div class="loader"></div>';
+            await wait(1);
             reset();
             while (await executeStep());
+            runBtn.innerHTML = '実行';
         });
 
         stepBtn.addEventListener('click', async () => {
@@ -1199,6 +1430,8 @@
 
         playBtn.addEventListener('click', async () => {
             if (playBtn.textContent === 'Play') {
+                runBtn.innerHTML = '<div class="loader"></div>';
+                await wait(1);
                 playBtn.textContent = 'Stop';
                 reset();
                 stopPlay = false;
@@ -1207,9 +1440,11 @@
                     await new Promise(resolve => setTimeout(resolve, 25));
                 }
                 playBtn.textContent = 'Play';
+                runBtn.innerHTML = '実行';
             } else {
                 stopPlay = true;
                 playBtn.textContent = 'Play';
+                runBtn.innerHTML = '実行';
             }
         });
 
@@ -1222,6 +1457,175 @@
         toggleButton.addEventListener('click', toggleBaseNumber);
         reset();
 
+        function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function isMobile() {
+            return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        }
+
+
+        function toggleElements() {
+            if (isMobile() && window.innerWidth >= 480 && window.innerHeight <= 480) {
+                document.getElementById("table4phone").style.display = "block";
+                document.getElementById("normal").style.display = "none";
+            } else {
+                document.getElementById("table4phone").style.display = "none";
+                document.getElementById("normal").style.display = "block";
+            }
+        }
+
+        // 初期チェックとリサイズ時のイベントリスナー
+        toggleElements();
+        window.addEventListener('resize', toggleElements);
+
+
+
+
+
+
+        var driver = window.driver.js.driver;
+        var driverObj
+
+        function driverUpdate() {
+
+            if (window.innerWidth <= 480 && /iPhone|iPod|Android/i.test(navigator.userAgent)) {
+
+                driverObj = driver({
+                    showProgress: true,
+                    steps: [
+                        { popover: { title: 'SukenFuck WebIDEへようこそ', description: 'SukenFuckとはBrainfuckを数学研究同好会仕様にしたものです。' } },
+                        { element: '#input-controls', popover: { title: 'メニュー', description: 'セーブ、ロード、シェア。またはBrainfuckのコードを読みこむことができます', side: "right", align: 'start' } },
+                        { element: '#input', popover: { title: 'SukenFuckコードエディタ', description: 'ここにプログラムを入力します', side: "left", align: 'start' } },
+                        { element: '#register', popover: { title: 'メモリセル表示エリア', description: 'メモリの具体的な内容がここに表示されます', side: "bottom", align: 'start' } },
+                        { element: '#register-controls', popover: { title: 'インタプリタ', description: '1Stepまたは連続してプログラムを実行できます。リアルタイムでメモリの変化を観察できます。', side: "bottom", align: 'start' } },
+                        { element: '#output', popover: { title: '出力', description: 'プログラムの出力です。', side: "top", align: 'start' } },
+                        { element: '#keyboard', popover: { title: 'キーボード', description: 'プログラムを入力する際に有効活用してください。', side: "right", align: 'start' } },
+                        { popover: { title: '対応表', description: 'スマートフォンを横に傾けることで表を表示できます。' } },
+                        { element: '#playBtn', popover: { title: '幸運を祈る!', description: '早速実行してみましょう', side: "right", align: 'start' } },
+
+                    ]
+                });
+            } else if (window.innerHeight <= 480 && /iPhone|iPod|Android/i.test(navigator.userAgent)) {
+                driverObj = driver({
+                    showProgress: true,
+                    steps: [
+                        { popover: { title: 'SukenFuck WebIDEへようこそ', description: 'SukenFuckとはBrainfuckを数学研究同好会仕様にしたものです。' } },
+                        { popover: { title: '画面を縦向きに', description: '画面を縦向きにするとIDEを表示' } },
+                        { element: '#input-controls', popover: { title: 'メニュー', description: 'セーブ、ロード、シェア。またはBrainfuckのコードを読みこむことができます', side: "right", align: 'start' } },
+                        { element: '#input', popover: { title: 'SukenFuckコードエディタ', description: 'ここにプログラムを入力します', side: "left", align: 'start' } },
+                        { element: '#register', popover: { title: 'メモリセル表示エリア', description: 'メモリの具体的な内容がここに表示されます', side: "bottom", align: 'start' } },
+                        { element: '#register-controls', popover: { title: 'インタプリタ', description: '1Stepまたは連続してプログラムを実行できます。リアルタイムでメモリの変化を観察できます。', side: "bottom", align: 'start' } },
+                        { element: '#output', popover: { title: '出力', description: 'プログラムの出力です。', side: "top", align: 'start' } },
+                        { element: '#keyboard', popover: { title: 'キーボード', description: 'プログラムを入力する際に有効活用してください。', side: "right", align: 'start' } },
+                        { popover: { title: '対応表', description: 'スマートフォンを横に傾けることで表を表示できます。' } },
+                        { element: '#playBtn', popover: { title: '幸運を祈る!', description: '早速実行してみましょう', side: "right", align: 'start' } },
+
+                    ]
+                });
+            } else {
+                driverObj = driver({
+                    showProgress: true,
+                    steps: [
+                        { popover: { title: 'SukenFuck WebIDEへようこそ', description: 'SukenFuckとはBrainfuckを数学研究同好会仕様にしたものです。' } },
+                        { element: '#input-controls', popover: { title: 'メニュー', description: 'セーブ、ロード、シェア。またはBrainfuckのコードを読みこむことができます', side: "right", align: 'start' } },
+                        { element: '#input', popover: { title: 'SukenFuckコードエディタ', description: 'ここにプログラムを入力します', side: "left", align: 'start' } },
+                        { element: '#table', popover: { title: '対応表', description: 'Brainfuckとの対応表と命令の表です。Brainfuckで使用する文字がキーボードのショートカットとして割り当てられています。', side: "left", align: 'start' } },
+                        { element: '#register', popover: { title: 'メモリセル表示エリア', description: 'メモリの具体的な内容がここに表示されます', side: "bottom", align: 'start' } },
+                        { element: '#register-controls', popover: { title: 'インタプリタ', description: '1Stepまたは連続してプログラムを実行できます。リアルタイムでメモリの変化を観察できます。', side: "bottom", align: 'start' } },
+                        { element: '#output', popover: { title: '出力', description: 'プログラムの出力です。', side: "top", align: 'start' } },
+                        { element: '#toCButton', popover: { title: 'Cとして書き出し', description: 'C言語にトランスパイルできます。', side: "right", align: 'start' } },
+                        { element: '#playBtn', popover: { title: '幸運を祈る!', description: '早速実行してみましょう', side: "right", align: 'start' } },
+                    ]
+                });
+            }
+        }
+        driverUpdate();
+        window.addEventListener('resize', driverUpdate);
+
+
+        // クッキーを設定する関数
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        // クッキーの値を取得する関数
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let c = cookies[i].trim();
+                if (c.indexOf(nameEQ) === 0) {
+                    return c.substring(nameEQ.length, c.length);
+                }
+            }
+            return null;
+        }
+
+        // 初期処理
+        (function () {
+            const cookieName = "SukenFuckAccess";
+            let accessValue = getCookie(cookieName);
+
+            if (accessValue === "true") {
+                console.log("アクセス済みです。");
+            } else {
+                console.log("初回アクセスです。ドライバーを実行します。");
+                driverObj.drive();
+                setCookie(cookieName, "true", 365); // クッキーを1週間保持
+            }
+        })();
+
+        const link = document.getElementById("driver");
+
+        // クリックイベントを設定
+        link.addEventListener("click", function (event) {
+            event.preventDefault(); // デフォルトの動作を防ぐ（リンク遷移を無効化）
+            driverObj.drive();
+        });
+        const charColors = {
+            'е': 'char-e',
+            'ɘ': 'char-ɘ',
+            'é': 'char-é',
+            'è': 'char-è',
+            'ē': 'char-ē',
+            'ę': 'char-ę',
+            'ё': 'char-ё',
+            'ė': 'char-ė',
+        };
+
+        const preElement = document.getElementById('input');
+        const ColortoggleButton = document.getElementById('ColortoggleButton');
+        let isColorized = false; // 色分け状態を管理するフラグ
+
+        // 文字を色付きの <span> タグで囲む関数
+        function colorizeText() {
+            const textContent = preElement.textContent.trim(); // 余分な空白を取り除く
+            const coloredHTML = Array.from(textContent).map(char => {
+                const className = charColors[char] || ''; // 未定義の文字にはクラスを適用しない
+                return `<span class="${className}">${char}</span>`;
+            }).join('');
+            preElement.innerHTML = coloredHTML;
+        }
+
+        // 色分けを解除する関数
+        function removeColorize() {
+            preElement.innerHTML = preElement.textContent.trim(); // <span> を削除して元に戻す
+        }
+
+        // ボタンのクリックイベントで色分けのトグル
+        ColortoggleButton.addEventListener('click', () => {
+            if (isColorized) {
+                removeColorize(); // 色分け解除
+            } else {
+                colorizeText(); // 色分け
+            }
+            isColorized = !isColorized; // 状態を反転
+        });
     </script>
 </body>
 
