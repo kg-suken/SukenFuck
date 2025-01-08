@@ -1364,56 +1364,56 @@
 
 
         async function executeStep() {
-            if (ip >= code.length) return false;
+    if (ip >= code.length) return false;
 
-            const cmd = code[ip];
-            switch (cmd) {
-                case 'е':
-                    pointer++;
-                    break;
-                case 'ɘ':
-                    pointer--;
-                    break;
-                case 'é':
-                    memory[pointer]++;
-                    break;
-                case 'è':
-                    memory[pointer]--;
-                    break;
-                case 'ē':
-                    output += String.fromCharCode(memory[pointer]);
-                    outputArea.textContent = output;
-                    break;
-                case 'ę':
-                    memory[pointer] = await getInput();
-                    break;
-                case 'ё':
-                    if (memory[pointer] === 0) {
-                        let depth = 1;
-                        while (depth > 0) {
-                            ip++;
-                            if (code[ip] === 'ё') depth++;
-                            if (code[ip] === 'ė') depth--;
-                        }
-                    }
-                    break;
-                case 'ė':
-                    if (memory[pointer] !== 0) {
-                        let depth = 1;
-                        while (depth > 0) {
-                            ip--;
-                            if (code[ip] === 'ė') depth++;
-                            if (code[ip] === 'ё') depth--;
-                        }
-                    }
-                    break;
+    const cmd = code[ip];
+    switch (cmd) {
+        case 'е':
+            pointer++;
+            break;
+        case 'ɘ':
+            pointer--;
+            break;
+        case 'é':
+            memory[pointer] = (memory[pointer] + 1) % 256; // 値を0-255の範囲に収める
+            break;
+        case 'è':
+            memory[pointer] = (memory[pointer] - 1 + 256) % 256; // 0から-1を引いた場合255にする
+            break;
+        case 'ē':
+            output += String.fromCharCode(memory[pointer]);
+            outputArea.textContent = output;
+            break;
+        case 'ę':
+            memory[pointer] = await getInput();
+            break;
+        case 'ё':
+            if (memory[pointer] === 0) {
+                let depth = 1;
+                while (depth > 0) {
+                    ip++;
+                    if (code[ip] === 'ё') depth++;
+                    if (code[ip] === 'ė') depth--;
+                }
             }
-            accessedIndices.add(pointer); // アクセスを記録
-            ip++;
-            updateMemoryDisplay();
-            highlightCodePosition();
-            return ip < code.length;
-        }
+            break;
+        case 'ė':
+            if (memory[pointer] !== 0) {
+                let depth = 1;
+                while (depth > 0) {
+                    ip--;
+                    if (code[ip] === 'ė') depth++;
+                    if (code[ip] === 'ё') depth--;
+                }
+            }
+            break;
+    }
+    accessedIndices.add(pointer); // アクセスを記録
+    ip++;
+    updateMemoryDisplay();
+    highlightCodePosition();
+    return ip < code.length;
+}
 
         runBtn.addEventListener('click', async () => {
             runBtn.innerHTML = '<div class="loader"></div>';
