@@ -19,7 +19,8 @@ BrainFuckをSuken仕様にしたもの。
 
 ## アイデア&構想
 **sskrc**  
-**DETERMINATION**
+**DETERMINATION**  
+**Pencil**
 
 ---
 ミスなどありましたらIssueなどを通してご連絡ください
